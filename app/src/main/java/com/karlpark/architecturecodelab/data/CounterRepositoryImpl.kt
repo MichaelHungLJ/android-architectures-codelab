@@ -17,4 +17,11 @@ class CounterRepositoryImpl : CounterRepository {
         countMap[screenNumber] = updated
         return updated
     }
+
+    override fun updateCountWithInput(screenNumber: Int, inputValue: Int): Int {
+        val currentCount = countMap[screenNumber] ?: 0
+        val updated = currentCount + inputValue
+        countMap[screenNumber] = updated
+        return updated
+    }
 }

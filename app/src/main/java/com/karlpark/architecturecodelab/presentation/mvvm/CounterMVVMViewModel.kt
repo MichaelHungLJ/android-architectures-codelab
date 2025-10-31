@@ -7,11 +7,13 @@ import com.karlpark.architecturecodelab.domain.CounterState
 import com.karlpark.architecturecodelab.domain.DecrementCounterUseCase
 import com.karlpark.architecturecodelab.domain.GetCounterUseCase
 import com.karlpark.architecturecodelab.domain.IncrementCounterUseCase
+import com.karlpark.architecturecodelab.domain.UpdateCounterInputUseCase
 import com.karlpark.architecturecodelab.presentation.Screen
 
 class CounterMVVMViewModel(
     private val incrementUseCase: IncrementCounterUseCase,
     private val decrementUseCase: DecrementCounterUseCase,
+    private val updateCounterInputUseCase: UpdateCounterInputUseCase,
     getCounterUseCase: GetCounterUseCase,
 ) : ViewModel() {
 
@@ -34,6 +36,17 @@ class CounterMVVMViewModel(
     }
 
     fun onEnter(input: String) {
+        val trimInput = input.trim()
+        val inputInt = trimInput.toIntOrNull()
+
+        if (inputInt != null) {
+            // add to count
+            val newCount = updateCounterInputUseCase.invoke(screen, inputInt)
+            _state.value = _state.value.copy(count = newCount)
+
+            // clear state
+            _inputValue.value = ""
+        }
     }
 
     fun onValueChange(newInput: String) {
