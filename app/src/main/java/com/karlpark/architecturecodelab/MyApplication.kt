@@ -91,6 +91,7 @@ class MyApplication : Application() {
                 ServiceLocator.getService(IncrementCounterUseCase::class.java),
                 ServiceLocator.getService(DecrementCounterUseCase::class.java),
                 ServiceLocator.getService(GetCounterUseCase::class.java),
+                ServiceLocator.getService(UpdateCounterInputUseCase::class.java)
             ),
         )
 
