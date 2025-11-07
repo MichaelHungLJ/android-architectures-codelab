@@ -10,5 +10,7 @@ interface CounterMvpContract {
         fun detach()
         fun onIncrementClicked()
         fun onDecrementClicked()
+        fun onEnter(input: String)
+        fun onValueChange(input: String)
     }
 }
