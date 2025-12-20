@@ -2,7 +2,7 @@ package com.karlpark.architecturecodelab.domain
 
 import com.karlpark.architecturecodelab.presentation.Screen
 
-class UpdateCounterInputUseCase(
+class UpdateCounterUseCase(
     private val repository: CounterRepository
 ) {
     operator fun invoke(

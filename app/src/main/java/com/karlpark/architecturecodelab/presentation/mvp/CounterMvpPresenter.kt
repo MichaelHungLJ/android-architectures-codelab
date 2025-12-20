@@ -3,14 +3,12 @@ package com.karlpark.architecturecodelab.presentation.mvp
 import com.karlpark.architecturecodelab.domain.DecrementCounterUseCase
 import com.karlpark.architecturecodelab.domain.GetCounterUseCase
 import com.karlpark.architecturecodelab.domain.IncrementCounterUseCase
-import com.karlpark.architecturecodelab.domain.UpdateCounterInputUseCase
+import com.karlpark.architecturecodelab.domain.UpdateCounterUseCase
 import com.karlpark.architecturecodelab.presentation.Screen
 
 class CounterMvpPresenter(
-    private val incrementUseCase: IncrementCounterUseCase,
-    private val decrementUseCase: DecrementCounterUseCase,
     private val getCounterUseCase: GetCounterUseCase,
-    private val updateCounterInputUseCase: UpdateCounterInputUseCase,
+    private val updateCounterUseCase: UpdateCounterUseCase,
 ) : CounterMvpContract.Presenter {
 
     private val screen = Screen.MVP
@@ -29,20 +27,20 @@ class CounterMvpPresenter(
     override fun detach() { this.view = null }
 
     override fun onIncrementClicked() {
-        incrementUseCase(screen)
-        stack.add(1)
+        updateCounterUseCase(screen, INCREMENT_COUNT_BY_ONE)
+        stack.add(INCREMENT_COUNT_BY_ONE)
         view?.displayCount(currentCount) // Direct View update
     }
     override fun onDecrementClicked() {
-        decrementUseCase(screen)
-        stack.add(-1)
+        updateCounterUseCase(screen, DECREMENT_COUNT_BY_ONE)
+        stack.add(DECREMENT_COUNT_BY_ONE)
         view?.displayCount(currentCount) // Direct View update
     }
 
     override fun onEnter(input: String) {
         val inputInt = input.trim().toIntOrNull() ?: return
 
-        updateCounterInputUseCase.invoke(screen, inputInt)
+        updateCounterUseCase.invoke(screen, inputInt)
         stack.add(inputInt)
         view?.displayCount(currentCount)
 
@@ -59,7 +57,12 @@ class CounterMvpPresenter(
         if (stack.isEmpty()) return
 
         val lastCount = stack.removeAt(stack.lastIndex)
-        updateCounterInputUseCase.invoke(screen, -lastCount)
+        updateCounterUseCase.invoke(screen, -lastCount)
         view?.displayCount(currentCount)
+    }
+
+    companion object CONSTANT {
+        const val INCREMENT_COUNT_BY_ONE = 1
+        const val DECREMENT_COUNT_BY_ONE = -1
     }
 }
