@@ -9,6 +9,7 @@ import com.karlpark.architecturecodelab.domain.CounterRepository
 import com.karlpark.architecturecodelab.domain.DecrementCounterUseCase
 import com.karlpark.architecturecodelab.domain.GetCounterUseCase
 import com.karlpark.architecturecodelab.domain.IncrementCounterUseCase
+import com.karlpark.architecturecodelab.domain.UpdateCounterUseCase
 import com.karlpark.architecturecodelab.presentation.mvc.CounterController
 import com.karlpark.architecturecodelab.presentation.mvi.CounterMVIReducer
 import com.karlpark.architecturecodelab.presentation.mvp.CounterMvpContract
@@ -37,6 +38,11 @@ class MyApplication : Application() {
         )
 
         ServiceLocator.registerService(
+            serviceType = UpdateCounterUseCase::class.java,
+            serviceInstance = UpdateCounterUseCase(ServiceLocator.getService(CounterRepository::class.java)),
+        )
+
+        ServiceLocator.registerService(
             serviceType = GetCounterUseCase::class.java,
             serviceInstance = GetCounterUseCase(ServiceLocator.getService(CounterRepository::class.java)),
         )
@@ -46,13 +52,16 @@ class MyApplication : Application() {
             serviceInstance = object : ViewModelProvider.Factory {
                 private val incrementUseCase = ServiceLocator.getService(IncrementCounterUseCase::class.java)
                 private val decrementUseCase = ServiceLocator.getService(DecrementCounterUseCase::class.java)
-
+                private val updateCounterUseCase = ServiceLocator.getService(UpdateCounterUseCase::class.java)
                 private val getCounterUseCase = ServiceLocator.getService(GetCounterUseCase::class.java)
 
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return when {
                         modelClass.isAssignableFrom(CounterMVVMViewModel::class.java) -> {
-                            CounterMVVMViewModel(incrementUseCase, decrementUseCase, getCounterUseCase) as T
+                            CounterMVVMViewModel(
+                                updateCounterUseCase = updateCounterUseCase,
+                                getCounterUseCase = getCounterUseCase
+                            ) as T
                         }
 
                         modelClass.isAssignableFrom(CounterMVIReducer::class.java) -> {
@@ -77,9 +86,8 @@ class MyApplication : Application() {
         ServiceLocator.registerService(
             serviceType = CounterMvpContract.Presenter::class.java,
             serviceInstance = CounterMvpPresenter(
-                ServiceLocator.getService(IncrementCounterUseCase::class.java),
-                ServiceLocator.getService(DecrementCounterUseCase::class.java),
                 ServiceLocator.getService(GetCounterUseCase::class.java),
+                ServiceLocator.getService(UpdateCounterUseCase::class.java)
             ),
         )
 
