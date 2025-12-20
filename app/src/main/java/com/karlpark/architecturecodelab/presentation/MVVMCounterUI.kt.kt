@@ -27,6 +27,7 @@ fun MVVMCounterUI(
     inputValue: String,
     onValueChange: (String) -> Unit,
     onEnter: (String) -> Unit,
+    onUndo: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -59,18 +60,27 @@ fun MVVMCounterUI(
             }
         }
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
+
+            Button(
+                onClick = { onUndo() },
+                modifier = Modifier.width(100.dp)
+            ) {
+                Text("Undo")
+            }
+
             TextField(
                 value = inputValue,
                 onValueChange = { onValueChange(it) },
                 singleLine = true,
-                modifier = Modifier.width(220.dp)
+                modifier = Modifier.width(140.dp)
             )
 
             Button(
                 onClick = { onEnter(inputValue) },
-                modifier = Modifier.width(80.dp)
+                modifier = Modifier.width(100.dp)
             ) {
                 Text("Enter")
             }
@@ -87,6 +97,7 @@ fun MVVMCounterUIPreview() {
         onDecrement = {},
         inputValue = "",
         onValueChange = {},
-        onEnter = {}
+        onEnter = {},
+        onUndo = {},
     )
 }

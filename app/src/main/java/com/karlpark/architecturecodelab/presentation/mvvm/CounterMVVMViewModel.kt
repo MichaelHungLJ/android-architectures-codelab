@@ -25,13 +25,17 @@ class CounterMVVMViewModel(
     private val _inputValue = mutableStateOf("")
     val inputValue: State<String> = _inputValue
 
+    private val stack = mutableListOf<Int>()
+
     fun increment() {
         val newCount = incrementUseCase(screen)
+        stack.add(1)
         _state.value = _state.value.copy(count = newCount)
     }
 
     fun decrement() {
         val newCount = decrementUseCase(screen)
+        stack.add(-1)
         _state.value = _state.value.copy(count = newCount)
     }
 
@@ -42,11 +46,21 @@ class CounterMVVMViewModel(
         if (inputInt != null) {
             // add to count
             val newCount = updateCounterInputUseCase.invoke(screen, inputInt)
+            stack.add(inputInt)
             _state.value = _state.value.copy(count = newCount)
 
             // clear state
             _inputValue.value = ""
         }
+    }
+
+    fun undoCount() {
+        if (stack.isEmpty()) return
+
+        val lastIndex = stack.lastIndex
+        val lastCount = stack.removeAt(lastIndex)
+        val newCount = updateCounterInputUseCase.invoke(screen, -lastCount)
+        _state.value = _state.value.copy(count = newCount)
     }
 
     fun onValueChange(newInput: String) {

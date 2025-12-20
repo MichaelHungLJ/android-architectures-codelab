@@ -28,7 +28,8 @@ fun MvvmCounterScreen() {
             onDecrement = viewModel::decrement,
             inputValue = inputValue,
             onValueChange = viewModel::onValueChange,
-            onEnter = viewModel::onEnter
+            onEnter = viewModel::onEnter,
+            onUndo = viewModel::undoCount,
         )
     }
 }
