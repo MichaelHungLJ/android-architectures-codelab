@@ -50,8 +50,6 @@ class MyApplication : Application() {
         ServiceLocator.registerService(
             serviceType = ViewModelProvider.Factory::class.java,
             serviceInstance = object : ViewModelProvider.Factory {
-                private val incrementUseCase = ServiceLocator.getService(IncrementCounterUseCase::class.java)
-                private val decrementUseCase = ServiceLocator.getService(DecrementCounterUseCase::class.java)
                 private val updateCounterUseCase = ServiceLocator.getService(UpdateCounterUseCase::class.java)
                 private val getCounterUseCase = ServiceLocator.getService(GetCounterUseCase::class.java)
 
@@ -65,7 +63,7 @@ class MyApplication : Application() {
                         }
 
                         modelClass.isAssignableFrom(CounterMVIReducer::class.java) -> {
-                            CounterMVIReducer(incrementUseCase, decrementUseCase, getCounterUseCase) as T
+                            CounterMVIReducer(getCounterUseCase, updateCounterUseCase) as T
                         }
                         // MVC Controller and MVP/VIPER Presenter are not ViewModels, handled separately.
                         else -> throw IllegalArgumentException("Unknown ViewModel class")
